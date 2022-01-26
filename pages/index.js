@@ -1,5 +1,6 @@
 import {Box, Button, Text, TextField, Image} from '@skynexui/components';
 import appConfig from '../config.json';
+import {useState} from 'react';
 
 function GlobalStyle(){
     return(<style global jsx>{`
@@ -54,7 +55,7 @@ function Title ({children,tag}) {
   }
     export default HomePage */
   export default function PaginaInicial() {
-    const username = 'peas';
+    const [username,setUserName] = useState('engRenanTorres');
   
     return (
       <>
@@ -62,8 +63,8 @@ function Title ({children,tag}) {
         <Box
           styleSheet={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            backgroundColor: appConfig.theme.colors.primary[500],
-            backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+/*             backgroundColor: appConfig.theme.colors.primary[500], */
+            backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/07/this-is-fine.jpeg)',
             backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
           }}
         >
@@ -97,6 +98,11 @@ function Title ({children,tag}) {
   
               <TextField
                 fullWidth
+                value={username}
+                onChange={(event)=>{
+                    setUserName(event.target.value)
+                }
+                }
                 textFieldColors={{
                   neutral: {
                     textColor: appConfig.theme.colors.neutrals[200],
