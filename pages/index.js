@@ -61,6 +61,7 @@ function Title ({children,tag}) {
               borderRadius: '5px', padding: '32px', margin: '16px',
               boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
               backgroundColor: appConfig.theme.colors.neutrals[700],
+              borderRadius: '40px',
             }}
           >
             {/* Formulário */}
@@ -72,12 +73,12 @@ function Title ({children,tag}) {
               }}
               styleSheet={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
+                width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px', 
               }}
             >
               <Title tag="h2">Chat Tudo Traquilo!</Title>
               <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
-                {appConfig.name}
+                {appConfig.name} Tudo Favorável!
               </Text>
   
               <TextField
@@ -122,7 +123,7 @@ function Title ({children,tag}) {
                 backgroundColor: appConfig.theme.colors.neutrals[800],
                 border: '1px solid',
                 borderColor: appConfig.theme.colors.neutrals[999],
-                borderRadius: '10px',
+                borderRadius: '40px',
                 flex: 1,
                 minHeight: '240px',
               }}
