@@ -1,31 +1,9 @@
 import {Box, Button, Text, TextField, Image} from '@skynexui/components';
 import appConfig from '../config.json';
+import { useRouter } from 'next/router';
 import {useState} from 'react';
 
-function GlobalStyle(){
-    return(<style global jsx>{`
-    *{
-        margin:0;
-        padding:0;
-        box-sizing:border-box;
-        list-style: none;
-    }
-    body {
-        font-family: sans-serif;
-    }
-    html, body, #__next{
-        min-height:100vh;
-        display:flex;
-        flex:1;
-    }
-    #__next{
-        flex:1;
-    }
-    #__next > * {
-        flex:1;
-    }
-    `}</style>)
-}
+
 
 function Title ({children,tag}) {
     const Tag = tag || 'h1';
@@ -56,15 +34,17 @@ function Title ({children,tag}) {
     export default HomePage */
   export default function PaginaInicial() {
     const [username,setUserName] = useState('engRenanTorres');
+    const roteamento = useRouter();
   
     return (
       <>
-        <GlobalStyle />
+        
         <Box
           styleSheet={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-/*             backgroundColor: appConfig.theme.colors.primary[500], */
-            backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/07/this-is-fine.jpeg)',
+          //   backgroundColor: appConfig.theme.colors.primary[500], 
+             backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/07/this-is-fine.jpeg)',
+          //  backgroundImage: 'url(/images/backgroundImage.jpeg)',            
             backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
           }}
         >
@@ -86,12 +66,16 @@ function Title ({children,tag}) {
             {/* Formulário */}
             <Box
               as="form"
+              onSubmit={(event)=>{
+                event.preventDefault();
+                roteamento.push('/chat');
+              }}
               styleSheet={{
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
               }}
             >
-              <Title tag="h2">Boas vindas de volta!</Title>
+              <Title tag="h2">Chat Tudo Traquilo!</Title>
               <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                 {appConfig.name}
               </Text>
@@ -143,13 +127,13 @@ function Title ({children,tag}) {
                 minHeight: '240px',
               }}
             >
-              <Image
+              {username.length>2 && <Image
                 styleSheet={{
                   borderRadius: '50%',
                   marginBottom: '16px',
                 }}
                 src={`https://github.com/${username}.png`}
-              />
+              />}
               <Text
                 variant="body4"
                 styleSheet={{
