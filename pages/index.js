@@ -83,6 +83,9 @@ function Title ({children,tag}) {
               <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
                 {appConfig.name} Tudo Favorável!
               </Text>
+              <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
+                *A imagem só funciona se colocar um login do GitHub para buscar a foto!
+              </Text>
   
               <TextField
                 fullWidth

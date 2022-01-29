@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js';
 import { useRouter } from 'next/router';
+import { ButtonSendSticker } from '../src/componentes/ButtonSendSticker';
+import { ButtonSendMessage } from '../src/componentes/ButtonSendMessage';
 
 // install yarn add @supabase/supabase-js
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMyMDU0NywiZXhwIjoxOTU4ODk2NTQ3fQ.vVaD0TIpkcmWd5k7gYd7WHttHpbb5yfBg6-Op2-yYmc';
@@ -12,7 +14,18 @@ const supaBaseClient = createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 /*fetch('https://api.github.com/users/engRenanTorres')
 .then(async (repostaDoServidor)=>{const dadosRenan = await repostaDoServidor.json()})*/
 
-
+function atualizaMensagensNaHora (adicionaMensagem) {
+    //precisa ativar o banco de dados do supabase para liberar o acesso em tempo real
+    //no site supabase: 
+    //clica no projeto -> ícone de database na lista da esquerda -> clica em 'replication' na nova lista que aparece
+    // ->clica no último item da linha "table 0" -> marcar o checkbox.
+    return supaBaseClient
+                .from('menssagens')
+                .on('INSERT', (respostaImediata)=>{
+                    adicionaMensagem(respostaImediata.new);
+                })
+                .subscribe();
+}
 
 export default function ChatPage() {
     const roteamento = useRouter()
@@ -22,11 +35,23 @@ export default function ChatPage() {
     
 
     useEffect(()=>{
-        const dadosDB = supaBaseClient
+        supaBaseClient
             .from('menssagens')
             .select('*')
             .order('id',{ascending: false})
             .then(({data})=>setMesageList(data));
+
+        const subscription = atualizaMensagensNaHora((novaMensagem)=>{
+        setMesageList((valorAtualDaLista)=>{
+            return [
+                novaMensagem,
+                ...valorAtualDaLista,
+            ]}
+        )
+        });
+        return ()=>{
+            subscription.unsubscribe();
+        }
     },[]);
 
     function handleNovasMenssagens(novoTexto) {
@@ -40,12 +65,6 @@ export default function ChatPage() {
             .from('menssagens')
             .insert([newMessage])
             .then(({data})=>{
-                setMesageList(
-                    [
-                        data[0],
-                        ...messageList,
-                    ]
-                )
             })
         setMesage('');
     }
@@ -100,6 +119,13 @@ export default function ChatPage() {
                             alignItems: 'center',
                         }}
                     >
+                        <ButtonSendSticker 
+                            onStickerClick={(sticker)=>
+                                {
+                                    handleNovasMenssagens(`:sticker:${sticker}`);
+                                }
+                            } 
+                        />
                         <TextField
                             value={message}
                             onChange={(event)=> 
@@ -126,6 +152,7 @@ export default function ChatPage() {
                                 color: appConfig.theme.colors.neutrals[200],
                             }}
                         />
+                        <ButtonSendMessage message={message} handleNovasMenssagens={handleNovasMenssagens}/>
                     </Box>
                 </Box>
             </Box>
@@ -207,7 +234,10 @@ function MessageList({mensagens}) {
                         {(new Date().toLocaleDateString())}
                     </Text>
                 </Box>
-                {mensagem.texto}
+                {mensagem.texto.startsWith(':sticker:')? 
+                    <Image styleSheet={{maxHeight:'100px', maxWidth:'100px'}} src={mensagem.texto.replace(':sticker:','')}/> : 
+                    mensagem.texto
+                }
             </Text>
             )})}
         </Box>
