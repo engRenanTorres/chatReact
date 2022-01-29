@@ -1,15 +1,55 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
+
+// install yarn add @supabase/supabase-js
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMyMDU0NywiZXhwIjoxOTU4ODk2NTQ3fQ.vVaD0TIpkcmWd5k7gYd7WHttHpbb5yfBg6-Op2-yYmc';
+const SUPABASE_URL = 'https://glimgmjnzvlwbjdcpojw.supabase.co';
+const supaBaseClient = createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+/*fetch('https://api.github.com/users/engRenanTorres')
+.then(async (repostaDoServidor)=>{const dadosRenan = await repostaDoServidor.json()})*/
+
+
 
 export default function ChatPage() {
+    const roteamento = useRouter()
+    const username = roteamento.query.username;
+    const [message,setMesage] = useState();
+    const [messageList,setMesageList] = useState ([]);
+    
 
-    const username = 'engRenanTorres';
-    const [mesage,setMesage] = useState();
-    const [mesageList,setMesageList] = useState ([]);
-    // Sua lógica vai aqui
+    useEffect(()=>{
+        const dadosDB = supaBaseClient
+            .from('menssagens')
+            .select('*')
+            .order('id',{ascending: false})
+            .then(({data})=>setMesageList(data));
+    },[]);
 
-    // ./Sua lógica vai aqui
+    function handleNovasMenssagens(novoTexto) {
+        const newMessage ={
+            //id: messageList.length+1,
+            de: username,
+            texto: novoTexto,
+        }
+
+        supaBaseClient
+            .from('menssagens')
+            .insert([newMessage])
+            .then(({data})=>{
+                setMesageList(
+                    [
+                        data[0],
+                        ...messageList,
+                    ]
+                )
+            })
+        setMesage('');
+    }
+
     return (
         <Box
             styleSheet={{
@@ -50,7 +90,7 @@ export default function ChatPage() {
                     
 
                     
-                    <MessageList mensagens={mesageList}/>
+                    <MessageList mensagens={messageList}/>
             
 
                     <Box
@@ -61,7 +101,7 @@ export default function ChatPage() {
                         }}
                     >
                         <TextField
-                            value={mesage}
+                            value={message}
                             onChange={(event)=> 
                                 {
                                 let variavel= event.target.value
@@ -70,17 +110,7 @@ export default function ChatPage() {
                             onKeyPress={(event)=>{
                                 if(event.key === 'Enter') {
                                     event.preventDefault();
-                                    setMesageList([
-                                        
-                                        {
-                                            id: mesageList.length+1,
-                                            nome: username,
-                                            mesage: mesage
-                                        },
-                                        ...mesageList,
-                                    ])
-                                    
-                                    setMesage('');
+                                    handleNovasMenssagens(message);
                                 }
                             }}
                             placeholder="Insira sua mensagem aqui..."
@@ -122,7 +152,6 @@ function Header() {
 }
 
 function MessageList({mensagens}) {
-    console.log('MessageList', mensagens);
     return (
         <Box
             tag="ul"
@@ -162,10 +191,10 @@ function MessageList({mensagens}) {
                             display: 'inline-block',
                             marginRight: '8px',
                         }}
-                        src={`https://github.com/engRenanTorres.png`}
+                        src={`https://github.com/${mensagem.de}.png`}
                     />
                     <Text tag="strong">
-                        {mensagem.nome}
+                        {mensagem.de}
                     </Text>
                     <Text
                         styleSheet={{
@@ -178,7 +207,7 @@ function MessageList({mensagens}) {
                         {(new Date().toLocaleDateString())}
                     </Text>
                 </Box>
-                {mensagem.mesage}
+                {mensagem.texto}
             </Text>
             )})}
         </Box>
