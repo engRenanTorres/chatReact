@@ -234,10 +234,12 @@ function MessageList({mensagens}) {
                         {(new Date().toLocaleDateString())}
                     </Text>
                 </Box>
-                {mensagem.texto.startsWith(':sticker:')? 
+                { mensagem.texto != null&&  //adicionado para tirar o erro do null
+                    (mensagem.texto.startsWith(':sticker:')? 
                     <Image styleSheet={{maxHeight:'100px', maxWidth:'100px'}} src={mensagem.texto.replace(':sticker:','')}/> : 
-                    mensagem.texto
-                }
+                    mensagem.texto)
+
+                } 
             </Text>
             )})}
         </Box>
