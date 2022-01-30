@@ -7,9 +7,15 @@ import { ButtonSendSticker } from '../src/componentes/ButtonSendSticker';
 import { ButtonSendMessage } from '../src/componentes/ButtonSendMessage';
 
 // install yarn add @supabase/supabase-js
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzMyMDU0NywiZXhwIjoxOTU4ODk2NTQ3fQ.vVaD0TIpkcmWd5k7gYd7WHttHpbb5yfBg6-Op2-yYmc';
-const SUPABASE_URL = 'https://glimgmjnzvlwbjdcpojw.supabase.co';
-const supaBaseClient = createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supaBaseClient = createClient( SUPABASE_URL, SUPABASE_ANON_KEY);
+
+console.log('supaurl'+process.env.NEXT_PUBLIC_SUPABASE_URL)
+console.log('supaurl'+process.env.NEXT_PUBLIC_OI)
+
+
+/* const supaBaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY); */
 
 /*fetch('https://api.github.com/users/engRenanTorres')
 .then(async (repostaDoServidor)=>{const dadosRenan = await repostaDoServidor.json()})*/
